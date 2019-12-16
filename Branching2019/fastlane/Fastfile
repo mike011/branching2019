@@ -1,0 +1,87 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+#require_relative "../buildscripts/codeCoverage.rb"
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+# This is the minimum version number required.
+# Update this, if you use features of a newer version
+fastlane_version "2.131.0"
+
+default_platform :ios
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Creates a new version of Service Framework by bumping the major version (X.0.0)"
+  lane :major_release do
+    options = Hash.new
+    options[:bump_type] = "major"
+    create_release(options)
+  end
+
+  desc "Creates a new version of Service Framework by bumping the minor version (*.X.0)"
+  lane :release do
+    options = Hash.new
+    options[:bump_type] = "minor"
+    create_release(options)
+  end
+
+  desc "Creates a new hotfix of Service Framework by bumping the patch version (*.*.X)"
+  lane :hotfix do
+    options = Hash.new
+    options[:bump_type] = "patch"
+    create_release(options)
+  end
+
+  private_lane :create_release do |options|
+    if ENV["GITHUB_TOKEN"].to_s.strip.empty?
+      raise "GITHUB_TOKEN needs to set so you can create a release"
+    end
+
+    oldVersion = get_version_number(xcodeproj: "Branching2019.xcodeproj")
+    puts " - Current version is " + oldVersion
+
+    increment_version_number(bump_type: options[:bump_type])
+    newVersion = get_version_number(xcodeproj: "Branching2019.xcodeproj")
+    puts " - New version is " + newVersion
+
+  end
+
+  private_lane :create_release2 do |options|
+    oldVersion = get_version_number(xcodeproj: "Branching2019.xcodeproj")
+    increment_version_number(bump_type: options[:bump_type])
+    commit_to_git
+    newVersion = get_version_number(xcodeproj: "Branching2019.xcodeproj")
+    add_git_tag(tag: newVersion)
+
+    changelog = changelog_from_git_commits(
+      between: [oldVersion, newVersion],
+      quiet: true
+    )
+
+    push_git_tags
+    set_github_release(
+      repository_name: "Enflick/textnow-ios-service-framework",
+      api_token: ENV["GITHUB_TOKEN"],
+      name: newVersion,
+      tag_name: newVersion,
+      description: changelog,
+      commitish: "develop"
+    )
+  end
+end

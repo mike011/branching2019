@@ -1,0 +1,8 @@
+.DS_Store
+Branching2019/fastlane/test_output/
+*_BACKUP_*
+*_BASE_*
+*_LOCAL_*
+*_REMOTE_*
+*.orig
+Branching2019/fastlane/report.xml

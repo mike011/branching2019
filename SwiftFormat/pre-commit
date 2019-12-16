@@ -1,0 +1,3 @@
+#!/bin/bash
+./SwiftFormat/format.sh
+exit $?
