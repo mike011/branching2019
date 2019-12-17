@@ -53,35 +53,44 @@ platform :ios do
       raise "GITHUB_TOKEN needs to set so you can create a release"
     end
 
-    oldVersion = get_version_number(xcodeproj: "Branching2019.xcodeproj")
-    puts " - Current version is " + oldVersion
+    ensure_git_status_clean()
+    ensure_git_branch(branch: 'develop')
+
+    old_version = get_version_number(xcodeproj: "Branching2019.xcodeproj")
+    puts " - Current version is " + old_version
 
     increment_version_number(bump_type: options[:bump_type])
-    newVersion = get_version_number(xcodeproj: "Branching2019.xcodeproj")
-    puts " - New version is " + newVersion
+    new_version = get_version_number(xcodeproj: "Branching2019.xcodeproj")
+    puts " - New version is " + new_version
 
-  end
+    puts "Checking out branch release/" + new_version
+    sh "git checkout -b release/" + new_version
 
-  private_lane :create_release2 do |options|
-    oldVersion = get_version_number(xcodeproj: "Branching2019.xcodeproj")
-    increment_version_number(bump_type: options[:bump_type])
-    commit_to_git
-    newVersion = get_version_number(xcodeproj: "Branching2019.xcodeproj")
-    add_git_tag(tag: newVersion)
+    git_commit(path: "Branching2019/Info.plist", message: "Version Bump to " + new_version)
+
+    add_git_tag(tag: new_version)
 
     changelog = changelog_from_git_commits(
-      between: [oldVersion, newVersion],
+      between: [old_version, new_version],
       quiet: true
     )
 
+    sh "git fetch --tags --force"
     push_git_tags
+
     set_github_release(
       repository_name: "mike011/branching2019",
       api_token: ENV["GITHUB_TOKEN"],
-      name: newVersion,
-      tag_name: newVersion,
+      name: new_version,
+      tag_name: new_version,
       description: changelog,
-      commitish: "develop"
+      commitish: last_git_commit
     )
+
+    puts "Checking out develop"
+    sh "git checkout develop"
+
+    puts "Deleting release/" + new_version + " branch"
+    sh "git branch -d release/" + new_version
   end
 end
