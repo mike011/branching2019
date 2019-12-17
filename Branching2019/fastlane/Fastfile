@@ -56,6 +56,9 @@ platform :ios do
     ensure_git_status_clean()
     ensure_git_branch(branch: 'master')
 
+    puts "Updating master"
+    sh "git pull"
+
     old_version = get_version_number(xcodeproj: "Branching2019.xcodeproj")
     puts " - Current version is " + old_version
 
@@ -63,8 +66,9 @@ platform :ios do
     new_version = get_version_number(xcodeproj: "Branching2019.xcodeproj")
     puts " - New version is " + new_version
 
-    puts "Checking out branch release/" + new_version
-    sh "git checkout -b release/" + new_version
+    branch = "release/" + new_version
+    puts "Checking out branch " + branch
+    sh "git checkout -b " + branch
 
     git_commit(path: "Branching2019/Info.plist", message: "Version Bump to " + new_version)
 
@@ -90,10 +94,10 @@ platform :ios do
     puts "Checking out master"
     sh "git checkout master"
 
-    puts "Updating master"
-    sh "git pull"
+    puts "Merge new version into master"
+    sh "git merge " + branch
 
-    puts "Deleting release/" + new_version + " branch"
-    sh "git branch -D release/" + new_version
+    puts "Deleting " + branch + " branch"
+    sh "git branch -d " + branch
   end
 end
