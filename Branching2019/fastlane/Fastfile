@@ -84,7 +84,7 @@ platform :ios do
       name: new_version,
       tag_name: new_version,
       description: changelog,
-      commitish: last_git_commit
+      commitish: master
     )
 
     puts "Checking out master"
