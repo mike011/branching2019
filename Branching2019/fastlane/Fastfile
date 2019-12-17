@@ -90,7 +90,10 @@ platform :ios do
     puts "Checking out master"
     sh "git checkout master"
 
+    puts "Updating master"
+    sh "git pull"
+
     puts "Deleting release/" + new_version + " branch"
-    sh "git branch -D release/" + new_version
+    sh "git branch -d release/" + new_version
   end
 end
