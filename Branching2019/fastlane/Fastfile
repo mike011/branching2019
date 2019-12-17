@@ -76,7 +76,7 @@ platform :ios do
 
     changelog = changelog_from_git_commits(
       between: [old_version, new_version],
-      quiet: false
+      quiet: true
     )
 
     sh "git fetch --tags --force"
@@ -87,7 +87,7 @@ platform :ios do
       api_token: ENV["GITHUB_TOKEN"],
       name: new_version,
       tag_name: new_version,
-      description: changelog,
+      description: "" + changelog,
       commitish: "master"
     )
 
