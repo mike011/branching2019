@@ -94,6 +94,6 @@ platform :ios do
     sh "git pull"
 
     puts "Deleting release/" + new_version + " branch"
-    sh "git branch -d release/" + new_version
+    sh "git branch -D release/" + new_version
   end
 end
