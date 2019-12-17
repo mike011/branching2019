@@ -91,6 +91,6 @@ platform :ios do
     sh "git checkout master"
 
     puts "Deleting release/" + new_version + " branch"
-    sh "git branch -d release/" + new_version
+    sh "git branch -D release/" + new_version
   end
 end
