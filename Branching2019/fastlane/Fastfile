@@ -76,7 +76,7 @@ platform :ios do
 
     changelog = changelog_from_git_commits(
       between: [old_version, new_version],
-      quiet: true
+      quiet: false
     )
 
     sh "git fetch --tags --force"
