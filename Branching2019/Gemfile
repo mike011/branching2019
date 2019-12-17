@@ -1,0 +1,10 @@
+source 'https://rubygems.org'
+
+ruby "~> 2.6.3"
+
+gem 'CFPropertyList', '~> 2.3', '>= 2.3.6'
+gem 'claide', '1.0.2'
+gem 'cocoapods', '1.7.5'
+gem 'fastlane', '2.131.0'
+gem 'slather', '2.4.7'
+gem 'xcode-install', '2.6.1'
