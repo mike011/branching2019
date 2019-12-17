@@ -54,7 +54,7 @@ platform :ios do
     end
 
     ensure_git_status_clean()
-    ensure_git_branch(branch: 'develop')
+    ensure_git_branch(branch: 'master')
 
     old_version = get_version_number(xcodeproj: "Branching2019.xcodeproj")
     puts " - Current version is " + old_version
@@ -87,8 +87,8 @@ platform :ios do
       commitish: last_git_commit
     )
 
-    puts "Checking out develop"
-    sh "git checkout develop"
+    puts "Checking out master"
+    sh "git checkout master"
 
     puts "Deleting release/" + new_version + " branch"
     sh "git branch -d release/" + new_version
