@@ -72,15 +72,6 @@ platform :ios do
 
     git_commit(path: "Branching2019/Info.plist", message: "Version Bump to " + new_version)
 
-    add_git_tag(tag: new_version)
-
-    changelog = changelog_from_git_commits(
-      between: [old_version, new_version],
-      quiet: true
-    )
-
-    sh "git fetch --tags --force"
-    push_git_tags
     puts "Checking out master"
     sh "git checkout master"
 
@@ -90,6 +81,15 @@ platform :ios do
     puts "Deleting " + branch + " branch"
     sh "git branch -d " + branch
 
+    changelog = changelog_from_git_commits(
+      between: [old_version, new_version],
+      quiet: true
+    )
+
+    sh "git fetch --tags --force"
+    add_git_tag(tag: new_version)
+    push_git_tags
+
     set_github_release(
       repository_name: "mike011/branching2019",
       api_token: ENV["GITHUB_TOKEN"],
@@ -98,5 +98,7 @@ platform :ios do
       description: "" + changelog,
       commitish: "master"
     )
+
+    push_to_git_remote
   end
 end
