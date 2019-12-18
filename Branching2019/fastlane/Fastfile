@@ -88,7 +88,7 @@ platform :ios do
       name: new_version,
       tag_name: new_version,
       description: "" + changelog,
-      commitish: branch
+      commitish: "master"
     )
 
     puts "Checking out master"
