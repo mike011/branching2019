@@ -81,6 +81,14 @@ platform :ios do
 
     sh "git fetch --tags --force"
     push_git_tags
+    puts "Checking out master"
+    sh "git checkout master"
+
+    puts "Merge new version into master"
+    sh "git merge " + branch
+
+    puts "Deleting " + branch + " branch"
+    sh "git branch -d " + branch
 
     set_github_release(
       repository_name: "mike011/branching2019",
@@ -90,14 +98,5 @@ platform :ios do
       description: "" + changelog,
       commitish: "master"
     )
-
-    puts "Checking out master"
-    sh "git checkout master"
-
-    puts "Merge new version into master"
-    sh "git merge " + branch
-
-    puts "Deleting " + branch + " branch"
-    sh "git branch -d " + branch
   end
 end
