@@ -81,15 +81,15 @@ platform :ios do
     puts "Deleting " + branch + " branch"
     sh "git branch -d " + branch
 
-    changelog = changelog_from_git_commits(
-      between: [old_version, new_version],
-      quiet: true
-    )
-
     sh "git fetch --tags --force"
     add_git_tag(tag: new_version)
     push_git_tags
 
+    changelog = changelog_from_git_commits(
+      between: [old_version, new_version],
+      quiet: true
+    )
+    
     set_github_release(
       repository_name: "mike011/branching2019",
       api_token: ENV["GITHUB_TOKEN"],
